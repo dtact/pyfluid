@@ -1,0 +1,84 @@
+// version of protocol buffer used
+syntax = "proto3";
+
+// package name for buffer will be used later
+package rpc;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;main";
+
+// service which can be executed
+service Fluid {
+  // ReceiveStream?
+  rpc Query (QueryRequest) returns (QueryResponse);
+
+  rpc Node (NodeRequest) returns (NodeResponse);
+
+  // different? AddEdgeStream?
+  rpc EdgeStream(stream EdgeStreamRequest) returns (EdgeStreamResponse);
+  rpc NodeStream(stream NodeStreamRequest) returns (NodeStreamResponse);
+}
+
+// argument
+message QueryRequest {
+    string query = 1;
+}
+
+message QueryEdge {
+    string subject = 1;
+    string predicate = 2;
+    string object = 3;
+
+    google.protobuf.Timestamp first = 4;
+    google.protobuf.Timestamp last = 5;
+
+    uint32 count = 6;
+}
+
+// return value
+message QueryResponse {
+// []nodes?
+
+    repeated QueryEdge edges = 1;
+}
+
+// return value
+message NodeRequest {
+  string subject = 1;
+  google.protobuf.Timestamp timestamp = 2;
+}
+
+// argument
+message NodeResponse {
+// data type and position of data
+  string subject = 1;
+  bytes node = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+// argument
+message NodeStreamRequest {
+// data type and position of data
+  string subject = 1;
+  bytes properties = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+// return value
+message NodeStreamResponse {
+}
+
+// argument
+message EdgeStreamRequest {
+// data type and position of data
+  string subject = 1;
+  string predicate = 2;
+  string object = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  bytes properties = 5;
+}
+
+// return value
+message EdgeStreamResponse {
+}
